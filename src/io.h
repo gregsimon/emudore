@@ -1,6 +1,7 @@
 /*
  * emudore, Commodore 64 emulator
  * Copyright (c) 2016, Mario Ballano <mballano@gmail.com>
+ * Changes by gregsimon@gmail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +19,19 @@
 #ifndef EMUDORE_IO_H
 #define EMUDORE_IO_H
 
-#include <SDL.h>
+#include <magenta/syscalls.h>
+
+#include "mojo/public/c/system/main.h"
+#include "mojo/public/cpp/application/application_impl_base.h"
+#include "mojo/public/cpp/application/connect.h"
+#include "mojo/public/cpp/application/run_application.h"
+#include "mojo/public/cpp/application/service_provider_impl.h"
+#include "mojo/public/cpp/bindings/interface_request.h"
+#include "mojo/public/cpp/bindings/strong_binding.h"
+#include "mojo/public/cpp/system/macros.h"
+#include "mojo/public/cpp/utility/run_loop.h"
+#include "mojo/services/framebuffer/interfaces/framebuffer.mojom.h"
+
 #include <queue>
 #include <chrono>
 #include <thread>
@@ -35,31 +48,35 @@
  * This class implements Input/Output devices connected to the 
  * Commodore 64 such as the screen and keyboard.
  *
- * Current backend is SDL2.
+ * Current backend is fuchsia/mojo.
  */
 class IO
 {
   private:
     Cpu *cpu_;
-    SDL_Window *window_;
-    SDL_Renderer *renderer_;
-    SDL_Texture *texture_;
-    SDL_PixelFormat *format_;
+    //SDL_Window *window_;
+    //SDL_Renderer *renderer_;
+    //SDL_Texture *texture_;
+    //SDL_PixelFormat *format_;
+    mojo::FramebufferProviderPtr provider_;
+    mojo::FramebufferPtr frame_buffer_;
+    mojo::FramebufferInfoPtr info_;
+
     uint32_t *frame_;
     size_t cols_;
     size_t rows_;
     unsigned int color_palette[16];
     uint8_t keyboard_matrix_[8];
     /* keyboard mappings */
-    std::unordered_map<SDL_Keycode,std::pair<int,int>> keymap_;
-    std::unordered_map<char,std::vector<SDL_Keycode>> charmap_;
+    //std::unordered_map<SDL_Keycode,std::pair<int,int>> keymap_;
+    //std::unordered_map<char,std::vector<SDL_Keycode>> charmap_;
     enum kKeyEvent
     {
       kPress,
       kRelease,
     };
     /* key events */
-    std::queue<std::pair<kKeyEvent,SDL_Keycode>> key_event_queue_;
+    //std::queue<std::pair<kKeyEvent,SDL_Keycode>> key_event_queue_;
     unsigned int next_key_event_at_;
     static const int kWait = 18000;
     /* vertical refresh sync */
@@ -72,8 +89,8 @@ class IO
     void cpu(Cpu *v){cpu_=v;};
     void init_color_palette();
     void init_keyboard();
-    void handle_keydown(SDL_Keycode k);
-    void handle_keyup(SDL_Keycode k);
+    //void handle_keydown(SDL_Keycode k);
+    //void handle_keyup(SDL_Keycode k);
     void type_character(char c);
     inline uint8_t keyboard_matrix_row(int col){return keyboard_matrix_[col];};
     void screen_update_pixel(int x, int y, int color);

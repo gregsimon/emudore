@@ -22,9 +22,6 @@
 
 #include "c64.h"
 #include "loader.h"
-#ifdef EMSCRIPTEN
-#include <emscripten.h>
-#endif
 
 C64 *c64;
 Loader *loader;
@@ -65,11 +62,6 @@ void wget_cb(const char *f)
 {
   wget_download_finished = true;
   load_file(f);
-}
-
-void emscripten_loop()
-{
-  c64->emscripten_loop();
 }
 
 int main(int argc, char **argv)
