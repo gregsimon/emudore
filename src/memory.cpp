@@ -1,6 +1,7 @@
 /*
  * emudore, Commodore 64 emulator
  * Copyright (c) 2016, Mario Ballano <mballano@gmail.com>
+ * Changes by gregsimon@gmail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +22,8 @@
 #include "vic.h"
 #include "cia1.h"
 #include "cia2.h"
+
+#include "roms.h"
 
 Memory::Memory()
 {
@@ -62,9 +65,12 @@ void Memory::setup_memory_banks(uint8_t v)
   for(size_t i=0 ; i < sizeof(banks_) ; i++)
     banks_[i] = kRAM;
   /* load ROMs */
-  load_rom("basic.901226-01.bin",kBaseAddrBasic);
-  load_rom("characters.901225-01.bin",kBaseAddrChars);
-  load_rom("kernal.901227-03.bin",kBaseAddrKernal);
+  //load_rom("basic.901226-01.bin",kBaseAddrBasic);
+  //load_rom("characters.901225-01.bin",kBaseAddrChars);
+  //load_rom("kernal.901227-03.bin",kBaseAddrKernal);
+  load_rom_static(assets_roms_kernal_901227_03_bin, assets_roms_kernal_901227_03_bin_len, kBaseAddrKernal);
+  load_rom_static(assets_roms_basic_901226_01_bin, assets_roms_basic_901226_01_bin_len, kBaseAddrBasic);
+  load_rom_static(assets_roms_characters_901225_01_bin, assets_roms_characters_901225_01_bin_len, kBaseAddrChars);
   /* kernal */
   if (hiram) 
     banks_[kBankKernal] = kROM;
@@ -260,6 +266,14 @@ uint8_t Memory::vic_read_byte(uint16_t addr)
   else
     v = read_byte_no_io(vic_addr);
   return v;
+}
+
+/**
+ * @brief loads a compiled-in binary into ROM
+ */
+void Memory::load_rom_static(const unsigned char* data, uint16_t size, uint16_t baseaddr)
+{
+  memcpy(&mem_rom_[baseaddr], data, size);
 }
 
 /**
