@@ -46,10 +46,10 @@ class IO
     //SDL_Texture *texture_;
     //SDL_PixelFormat *format_;
 
-    uint8_t *frame_;
+    uint16_t *frame_;
     size_t cols_;
     size_t rows_;
-    uint8_t color_palette[16];
+    uint16_t color_palette[16];
     uint8_t keyboard_matrix_[8];
     /* keyboard mappings */
     //std::unordered_map<SDL_Keycode,std::pair<int,int>> keymap_;
@@ -85,7 +85,7 @@ class IO
 
     int w() const { return cols_; }
     int h() const { return rows_; }
-    const uint8_t* display_base_addr() const { return frame_; }
+    const uint16_t* display_base_addr() const { return frame_; }
 };
 
 // inline member functions accesible from other classes /////////////////////

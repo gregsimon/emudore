@@ -103,35 +103,22 @@ public:
 
   void Draw() {
     printf("EmudoreApp::Draw() fmt=%d\n", (int)info_->format);
-    /*
-    printf("EmudoreApp::Draw()\n");
-    switch (info_->format) {
-      case mojo::FramebufferFormat::RGB_565:
-        // TODO
-        break;
-      case mojo::FramebufferFormat::ARGB_8888:
-        // TODO
-        break;
-      default:
-        printf("Unknown color type %d\n", info_->format);        
-        break;
-    } */
-        /*
-    SkCanvas* canvas = surface_->getCanvas();
-    canvas->clear(SK_ColorBLUE);
-    SkPaint paint;
-    paint.setColor(0xFFFF00FF);
-    paint.setAntiAlias(true);
-    canvas->drawCircle(x_, y_, 200.0f, paint);
-    canvas->flush();
 
-    frame_buffer_->Flush([this]() { Draw(); }); */
     IO* io = c64_->io();
-
     size_t height = std::min(info_->size->height, io->h());
     size_t width = std::min(info_->size->width, io->w());
 
-    
+    // RGB565
+    const uint8_t* src = (const uint8_t*)io->display_base_addr();
+    uint8_t* dst = (uint8_t*)buffer_;
+    for (size_t y=0; y < height; y++) {
+      uint8_t* dst_row = (uint8_t*)(dst + (y * info_->row_bytes));
+      const uint8_t* src_row = src + (y * (2*io->w()));
+      memcpy(dst_row, src_row, 2 * width);
+    }
+
+    /*    
+    // RGB332
     const uint8_t* src = io->display_base_addr();
     uint8_t* dst = (uint8_t*)buffer_;
     for (size_t y=0; y < height; y++) {
@@ -142,6 +129,7 @@ public:
         *dst_row++ = *src_row++;
       }
     }
+    */
 
     c64_->emscripten_loop();
     frame_buffer_->Flush([this]() { Draw(); });

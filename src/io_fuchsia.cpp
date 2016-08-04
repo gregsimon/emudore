@@ -29,7 +29,7 @@ IO::IO()
   cols_ = Vic::kVisibleScreenWidth;
   rows_ = Vic::kVisibleScreenHeight;
 
-  frame_  = new uint8_t[cols_ * rows_]();
+  frame_  = new uint16_t[cols_ * rows_]();
   init_color_palette();
   init_keyboard();
   next_key_event_at_ = 0;
@@ -59,26 +59,32 @@ void IO::init_keyboard()
 
 uint8_t PackRGBtoRGB332(uint8_t r, uint8_t g, uint8_t b) {
   // r0r1r2 g0g1g2 b0b1
-  return (r &  0xe0) | ( (g & 0xe0) >> 3) | ((b & 0xc0 ) >> 6);
+  return (b &  0xe0) | ( (g & 0xe0) >> 3) | ((r & 0xc0 ) >> 6);
+}
+uint16_t PackRGBtoRGB565(int r, int g, int b) {
+  // rrrrr ggg  ggg bbbbb
+  return ((r & 0xf8) <<8) 
+          | ((g & 0xfc) << 3) 
+          | ((b & 0xf8 ) >> 3);
 }
 void IO::init_color_palette()
 {
-  color_palette[0]   = PackRGBtoRGB332( 0x00, 0x00, 0x00);
-  color_palette[1]   = PackRGBtoRGB332( 0xff, 0xff, 0xff);
-  color_palette[2]   = PackRGBtoRGB332( 0xab, 0x31, 0x26);
-  color_palette[3]   = PackRGBtoRGB332( 0x66, 0xda, 0xff);
-  color_palette[4]   = PackRGBtoRGB332( 0xbb, 0x3f, 0xb8);
-  color_palette[5]   = PackRGBtoRGB332( 0x55, 0xce, 0x58);
-  color_palette[6]   = PackRGBtoRGB332( 0x1d, 0x0e, 0x97);
-  color_palette[7]   = PackRGBtoRGB332( 0xea, 0xf5, 0x7c);
-  color_palette[8]   = PackRGBtoRGB332( 0xb9, 0x74, 0x18);
-  color_palette[9]   = PackRGBtoRGB332( 0x78, 0x53, 0x00);
-  color_palette[10]  = PackRGBtoRGB332( 0xdd, 0x93, 0x87);
-  color_palette[11]  = PackRGBtoRGB332( 0x5b, 0x5b, 0x5b);
-  color_palette[12]  = PackRGBtoRGB332( 0x8b, 0x8b, 0x8b);
-  color_palette[13]  = PackRGBtoRGB332( 0xb0, 0xf4, 0xac);
-  color_palette[14]  = PackRGBtoRGB332( 0xaa, 0x9d, 0xef);
-  color_palette[15]  = PackRGBtoRGB332( 0xb8, 0xb8, 0xb8);
+  color_palette[0]   = PackRGBtoRGB565( 0x00, 0x00, 0x00);
+  color_palette[1]   = PackRGBtoRGB565( 0xff, 0xff, 0xff);
+  color_palette[2]   = PackRGBtoRGB565( 0xab, 0x31, 0x26);
+  color_palette[3]   = PackRGBtoRGB565( 0x66, 0xda, 0xff);
+  color_palette[4]   = PackRGBtoRGB565( 0xbb, 0x3f, 0xb8);
+  color_palette[5]   = PackRGBtoRGB565( 0x55, 0xce, 0x58);
+  color_palette[6]   = PackRGBtoRGB565( 0x1d, 0x0e, 0x97);
+  color_palette[7]   = PackRGBtoRGB565( 0xea, 0xf5, 0x7c);
+  color_palette[8]   = PackRGBtoRGB565( 0xb9, 0x74, 0x18);
+  color_palette[9]   = PackRGBtoRGB565( 0x78, 0x53, 0x00);
+  color_palette[10]  = PackRGBtoRGB565( 0xdd, 0x93, 0x87);
+  color_palette[11]  = PackRGBtoRGB565( 0x5b, 0x5b, 0x5b);
+  color_palette[12]  = PackRGBtoRGB565( 0x8b, 0x8b, 0x8b);
+  color_palette[13]  = PackRGBtoRGB565( 0xb0, 0xf4, 0xac);
+  color_palette[14]  = PackRGBtoRGB565( 0xaa, 0x9d, 0xef);
+  color_palette[15]  = PackRGBtoRGB565( 0xb8, 0xb8, 0xb8);
 
 /*
   color_palette[0]   = SDL_MapRGB(format_, 0x00, 0x00, 0x00);
