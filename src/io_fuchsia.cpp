@@ -26,7 +26,10 @@ IO::IO()
 {
   // TODO framebuffer init
 
-  frame_  = new uint32_t[cols_ * rows_]();
+  cols_ = Vic::kVisibleScreenWidth;
+  rows_ = Vic::kVisibleScreenHeight;
+
+  frame_  = new uint8_t[cols_ * rows_]();
   init_color_palette();
   init_keyboard();
   next_key_event_at_ = 0;
@@ -53,8 +56,30 @@ void IO::init_keyboard()
 /** 
  * @brief init c64 color palette 
  */
+
+uint8_t PackRGBtoRGB332(uint8_t r, uint8_t g, uint8_t b) {
+  // r0r1r2 g0g1g2 b0b1
+  return (r &  0xe0) | ( (g & 0xe0) >> 3) | ((b & 0xc0 ) >> 6);
+}
 void IO::init_color_palette()
 {
+  color_palette[0]   = PackRGBtoRGB332( 0x00, 0x00, 0x00);
+  color_palette[1]   = PackRGBtoRGB332( 0xff, 0xff, 0xff);
+  color_palette[2]   = PackRGBtoRGB332( 0xab, 0x31, 0x26);
+  color_palette[3]   = PackRGBtoRGB332( 0x66, 0xda, 0xff);
+  color_palette[4]   = PackRGBtoRGB332( 0xbb, 0x3f, 0xb8);
+  color_palette[5]   = PackRGBtoRGB332( 0x55, 0xce, 0x58);
+  color_palette[6]   = PackRGBtoRGB332( 0x1d, 0x0e, 0x97);
+  color_palette[7]   = PackRGBtoRGB332( 0xea, 0xf5, 0x7c);
+  color_palette[8]   = PackRGBtoRGB332( 0xb9, 0x74, 0x18);
+  color_palette[9]   = PackRGBtoRGB332( 0x78, 0x53, 0x00);
+  color_palette[10]  = PackRGBtoRGB332( 0xdd, 0x93, 0x87);
+  color_palette[11]  = PackRGBtoRGB332( 0x5b, 0x5b, 0x5b);
+  color_palette[12]  = PackRGBtoRGB332( 0x8b, 0x8b, 0x8b);
+  color_palette[13]  = PackRGBtoRGB332( 0xb0, 0xf4, 0xac);
+  color_palette[14]  = PackRGBtoRGB332( 0xaa, 0x9d, 0xef);
+  color_palette[15]  = PackRGBtoRGB332( 0xb8, 0xb8, 0xb8);
+
 /*
   color_palette[0]   = SDL_MapRGB(format_, 0x00, 0x00, 0x00);
   color_palette[1]   = SDL_MapRGB(format_, 0xff, 0xff, 0xff);
@@ -185,6 +210,7 @@ void IO::screen_draw_border(int y, int color)
  */
 void IO::screen_refresh()
 {
+  printf("IO::screen_refresh()\n");
   // TODO : copy pixmap to mojo framebuffer
 
   //SDL_UpdateTexture(texture_, NULL, frame_, cols_ * sizeof(uint32_t));

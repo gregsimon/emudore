@@ -17,6 +17,8 @@
  */
 
 #include <fstream>
+#include <string.h>
+
 #include "memory.h"
 #include "util.h"
 #include "vic.h"

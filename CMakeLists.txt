@@ -6,7 +6,7 @@ set(SRC_FILES "src/c64.cpp"
               "src/cia1.cpp"
               "src/cia2.cpp"
               "src/vic.cpp"
-              "src/io.cpp"
+              "src/io_fuchsia.cpp"
               "src/loader.cpp"
               "src/main.cpp")
 # GCC and Clang

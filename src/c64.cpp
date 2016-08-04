@@ -105,13 +105,13 @@ void C64::emscripten_loop()
   unsigned int frame = vic_->frames();
   while(frame == vic_->frames())
   {
-    /* CIA1 */
+    /* CIA1 */    
     cia1_->emulate();
-    /* CIA2 */
+    /* CIA2 */    
     cia2_->emulate();
-    /* CPU */
+    /* CPU */    
     cpu_->emulate();
-    /* VIC-II */
+    /* VIC-II */    
     vic_->emulate();
     /* IO */
     io_->emulate();
@@ -119,6 +119,8 @@ void C64::emscripten_loop()
     if(callback_) callback_();
   }
 }
+
+
  
 /**
  * @brief runs Klaus Dormann's 6502 test suite 
@@ -132,6 +134,7 @@ void C64::test_cpu()
   mem_->write_byte(Memory::kAddrMemoryLayout, 0);
   /* load tests into RAM */
   mem_->load_ram("tests/6502_functional_test.bin",0x400);
+  //mem_->load_rom_static(assets_tests_6502_functional_test_bin, assets_tests_6502_functional_test_bin_len, 0x400);
   cpu_->pc(0x400);
   while(true)
   {

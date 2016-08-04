@@ -1,12 +1,10 @@
-# emudore, a Commodore 64 emulator
-
-![basic] (/pics/basic.gif "basic")
 
 # How to Use?
 
 1. git clone into the fuchsia/mojo/examples/ folder
 2. modify fuchsia/mojo/examples/BUILD.gn to pull the folder in as a dependency
-3. Follow normal instructions to build at https://fuchsia.googlesource.com/manifest
+3. modify packages/gn/mojo to add a section for emudore
+4. Follow normal instructions to build at https://fuchsia.googlesource.com/manifest
 
 # What's this?
 

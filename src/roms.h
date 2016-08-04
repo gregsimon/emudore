@@ -1720,5 +1720,6 @@ const unsigned char assets_roms_basic_901226_01_bin[] = {
 };
 unsigned int assets_roms_basic_901226_01_bin_len = 8192;
 
+
 #endif
 

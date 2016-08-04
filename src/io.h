@@ -19,19 +19,6 @@
 #ifndef EMUDORE_IO_H
 #define EMUDORE_IO_H
 
-#include <magenta/syscalls.h>
-
-#include "mojo/public/c/system/main.h"
-#include "mojo/public/cpp/application/application_impl_base.h"
-#include "mojo/public/cpp/application/connect.h"
-#include "mojo/public/cpp/application/run_application.h"
-#include "mojo/public/cpp/application/service_provider_impl.h"
-#include "mojo/public/cpp/bindings/interface_request.h"
-#include "mojo/public/cpp/bindings/strong_binding.h"
-#include "mojo/public/cpp/system/macros.h"
-#include "mojo/public/cpp/utility/run_loop.h"
-#include "mojo/services/framebuffer/interfaces/framebuffer.mojom.h"
-
 #include <queue>
 #include <chrono>
 #include <thread>
@@ -58,14 +45,11 @@ class IO
     //SDL_Renderer *renderer_;
     //SDL_Texture *texture_;
     //SDL_PixelFormat *format_;
-    mojo::FramebufferProviderPtr provider_;
-    mojo::FramebufferPtr frame_buffer_;
-    mojo::FramebufferInfoPtr info_;
 
-    uint32_t *frame_;
+    uint8_t *frame_;
     size_t cols_;
     size_t rows_;
-    unsigned int color_palette[16];
+    uint8_t color_palette[16];
     uint8_t keyboard_matrix_[8];
     /* keyboard mappings */
     //std::unordered_map<SDL_Keycode,std::pair<int,int>> keymap_;
@@ -82,6 +66,7 @@ class IO
     /* vertical refresh sync */
     std::chrono::high_resolution_clock::time_point prev_frame_was_at_;
     void vsync();
+
   public:
     IO();
     ~IO();
@@ -97,13 +82,17 @@ class IO
     void screen_draw_rect(int x, int y, int n, int color);
     void screen_draw_border(int y, int color);
     void screen_refresh();
+
+    int w() const { return cols_; }
+    int h() const { return rows_; }
+    const uint8_t* display_base_addr() const { return frame_; }
 };
 
 // inline member functions accesible from other classes /////////////////////
 
 inline void IO::screen_update_pixel(int x, int y, int color)
 {
-  frame_[y * cols_  + x] = color_palette[color & 0xf];
+  *(frame_ + ((y * cols_)  + x)) = color_palette[color & 0xf];
 };
 
 #endif

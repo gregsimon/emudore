@@ -92,10 +92,11 @@ int main(int argc, char **argv)
     load_file(argv[1]);
 #endif 
   }
-#ifdef EMSCRIPTEN
-  emscripten_set_main_loop(emscripten_loop,0,0);
-#else
-  c64->start();
-#endif
+  //emscripten_set_main_loop(emscripten_loop,0,0);
+//  c64->start();
+  while (true) {
+    c64->emscripten_loop();
+  }
+
   return 0;
 }
